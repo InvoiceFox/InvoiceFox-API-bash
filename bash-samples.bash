@@ -4,12 +4,11 @@
 
 # add invoice head and get the id
 
-$ curl -v -k \
-	-u cgf0a3v15ek3dlb2swg450pcd9rohz89eva:x \
-	-d "title=11-0001&date_sent=20/05/2011&date_to_pay=10/06/2011&id_partner=1" \
+$ curl -k -u cgf0a3v15ek3dlb2swg450pcd9rohz89eva:x \
+	-d "title=11-0002&date_sent=2011-01-02&date_to_pay=2011-04-12&id_partner=10" 
 	"https://www.invoicefox.com/API?_r=invoice-sent&_m=insert-into"
 
->> ['ok',[{'id':1}]]
+>>	['ok',[{'id':45}]]
 
 # add invoice body and get the id
 
