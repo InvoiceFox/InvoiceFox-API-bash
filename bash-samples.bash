@@ -11,7 +11,7 @@ $ curl -v -k \
 
 >>	['ok',[{'id':1}]]
 
-# add invoice body and get the id
+# add invoice body line and get the id - invoice can have multiple body lines
 
 $ curl -v -k \
 	-u cgf0a3v15ek3dlb2swg450pcd9rohz89eva:x \
