@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+R=$1
+M=$2
+shift
+shift
+
+./invf-$R-$M $@
