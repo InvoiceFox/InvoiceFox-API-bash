@@ -1,3 +1,42 @@
 ~InvoiceFox API :: bash~
 
-examples of InvoiceFox API using bash.
+Examples and utilities for using InvoiceFox API with bash.
+
+-=State=-
+
+This is all in Alpha state. We are making the API more robust and informative while working on this.
+
+-=Files=-
+
+curl-samples : examples of using curl to access the API
+
+invf-* : files are the beginings of InvoiceFox commandline interface. Use -h on them for usage info.
+
+.invfpwd : put your api in here (now a code of a testing account is there)
+
+*.r : used to generate the invf-* scripts
+
+-=Example of use=-
+
+$ ./invf-inv-create -n 111-222 -c 10 -d 2011-10-10 -p 2011-20-10 -s 2011-10-11 -f csv
+id
+157
+
+
+$ ./invf-inv-next-doc -h
+
+usage: ./invf-inv-next-doc options
+
+Get the document number of next invoice.
+
+options:
+-f Response format: json, csv, html, xml (optional)
+
+
+$ ./invf-inv-next-doc
+[{'max_title':'111-223'}]
+
+
+$ ./invf-inv-next-doc -f csv
+max_title
+111-223
