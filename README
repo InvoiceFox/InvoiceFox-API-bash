@@ -1,12 +1,20 @@
-~InvoiceFox API :: bash~
+InvoiceFox API :: bash
+======================
+
 
 Examples and utilities for using InvoiceFox API with bash.
 
--=State=-
+http://www.invoicefox.com
+
+
+State
+-----
 
 This is all in Alpha state. We are making the API more robust and informative while working on this.
 
--=Files=-
+
+Files
+-----
 
 curl-samples : examples of using curl to access the API
 
@@ -16,8 +24,11 @@ invf-* : files are the beginings of InvoiceFox commandline interface. Use -h on 
 
 *.r : used to generate the invf-* scripts
 
--=Example of use=-
 
+Example of use
+--------------
+
+```bash
 $ ./invf-inv-create -n 111-222 -c 10 -d 2011-10-10 -p 2011-20-10 -s 2011-10-11 -f csv
 id
 157
@@ -40,3 +51,4 @@ $ ./invf-inv-next-doc
 $ ./invf-inv-next-doc -f csv
 max_title
 111-223
+```
