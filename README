@@ -22,7 +22,7 @@ invf-* : files are the beginings of InvoiceFox commandline interface. Use -h on 
 
 invf : proxy for invf-* commands
 
-.invfpwd : put your api in here (now a code of a testing account is there)
+.invfpwd : put your api access code in here (now a code of a testing account is there)
 
 *.r : used to generate the invf-* scripts
 
@@ -31,9 +31,29 @@ Examples of use
 --------------
 
 ```
+$ ./invf inv create -h
+
+usage: ./invf-inv-create options
+
+Creates an invoice head.
+
+options:
+-n Docnum (required)
+-c Contact ID (required)
+-d Date sent (required)
+-p Payment deadline (required)
+-s Payment deadline (required)
+-f Response format: json, csv, html, xml (optional)
+
+
+ - One or more of required params are missing.
+
+
+
 $ ./invf inv create -n 111-222 -c 10 -d 2011-10-10 -p 2011-20-10 -s 2011-10-11 -f csv
 id
 157
+
 
 
 $ ./invf inv list -f csv
@@ -46,6 +66,7 @@ id;title;date_sent;date_to_pay;date_served;id_partner;vat_level;date_payed;disab
 ...
 
 
+
 $ ./invf inv next-doc -h
 
 usage: ./invf-inv-next-doc options
@@ -56,8 +77,10 @@ options:
 -f Response format: json, csv, html, xml (optional)
 
 
+
 $ ./invf inv next-doc
 [{'max_title':'111-223'}]
+
 
 
 $ ./invf inv next-doc -f csv
