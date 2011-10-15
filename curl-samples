@@ -37,4 +37,3 @@ $ curl -v -k \
 
 >> binary-pdf-data
 
-#### TODO -- make it work (create invoice has problems with date format, add aditional methods)
