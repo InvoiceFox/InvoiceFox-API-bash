@@ -4,9 +4,11 @@ InvoiceFox API :: bash
 
 Examples of using InvoiceFox API with bash. Can be used on:
 
+https://www.cebelca.biz
+
 https://www.invoicefox.com
 
-https://www.cebelca.biz
+http://www.invoicefox.co.nz
 
 What's the point?
 -----------------
@@ -19,6 +21,6 @@ Example of use:
 
   ./osnovni primeri r1 10
 
-  ././specificni-primeri fi1 80
+  ./specificni-primeri fi1 80
 
 Look at the code ...
