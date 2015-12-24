@@ -1,0 +1,149 @@
+#
+##
+### Čebelca.biz primeri (novi strežnik z davčnimi blagajnami)
+##
+#
+#
+# pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ
+#
+# ukaze pokličete npr. tako:
+#
+# ./primeri-spec r1 12
+#
+
+TOKEN=`cat .token`
+CMD=$1
+ARG=$2
+ARG2=$3
+
+# ugotovimo kater parameter je za vnos davčne št. ker ni required, da bi videli že na podlagi validacije
+
+if [[ $CMD == "p0" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "" \
+	"http://test.cebelca.biz/API?_r=partner&_m=assure&_x=1"
+
+fi
+#>> ['ok',[{'id':1}]]
+
+
+# zagotovimo partnerja (če točno tak že obstaja pridobi ID partnerja, će še ne ga doda in pridobi ID partnerja)
+
+if [[ $CMD == "p1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "name=Test d.o.o.&street=Velika cesta&postal=1234&city=Ljubljan&vatid=$ARG" \
+	"http://test.cebelca.biz/API?_r=partner&_m=assure"
+
+fi
+#>> ['ok',[{'id':1}]]
+
+
+
+#
+## naredimo glavo računa preko invoice-sent insert-smart
+#
+# ta omogoča da namesto id_partner podamo taxnum (vatid) partnerja
+#
+# (pred davčnimi blagajnami je metoda lahko tudi sama določila št. računa če smo podali "-" za title
+# sedaj se št. računa ne določa ob kreiranju ampak se račun "izda" ločeno. takrat se potencialno davčno potrdi in pridobi št. rač.
+#
+
+if [[ $CMD == "rs1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&taxnum=$ARG" \
+	"http://test.cebelca.biz/API?_r=invoice-sent&_m=insert-smart"
+
+fi
+#>> ['ok',[{'id':1}]] 
+
+#
+## naredimo glavo računa preko invoice-sent insert-smart-2
+#
+# omogoča naslednje:
+# * taxnum je lahko uporabljena namesto id_partner za določanje partnerja, tako vam ni treba voditi stanja naših id-jev partnerjev na svoji strani
+# * v id_document_ext lahko definirate externi id računa / naročila in s tem id-jem lahko potem opravljate določene funkcije, kot zabeležite plačilo, predobite PDF, spet prednost v tem da ni treba dodajati tabele npr. pluginu spletni trgovini
+# * če računu določite tujo valuto (id_currency) in conv_rate ne določite (ali je 0) ta metoda sama pridobi conv_rate preden doda zapis
+# * v prihodnje, lahko bi preprečeval da z istim externim id-jem naredite dva računa
+#
+
+if [[ $CMD == "rs2" && $ARG != "" && $ARG2 != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG&id_currency=2&conv_rate=0&id_document_ext=$ARG2" \
+	"http://test.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
+
+fi
+
+# dodajmo še postavko, da bo kaj plačati (tu ni opcije externega id-je, ker smo id glave ravno dobili s prejšnjim klicem in ga ni treba hraniti)
+
+if [[ $CMD == "rb1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "title=programming service&qty=10&mu=piece&price=120&vat=20&discount=0&id_invoice_sent=$ARG" \
+	"http://test.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+
+fi
+
+
+#
+## označimo da je račun plačan v celoti (preprostejša metoda kot jo uporablja app, kjer morate vnesti znesek)
+#
+# poleg navadnega klica, ki ga uporablja app omogoča nasledje
+# * namesto id_invoice_sent lahko uporabite externi id, npr. id naročila na vaši strani
+# * sam izračuna znesek plačila, tako da vam ni treba to računati na odjemalcu
+#
+
+if [[ $CMD == "mp1" && $ARG != "" && $ARG2 != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_of=22.12.2015&id_invoice_sent=0&id_payment_method=$ARG&note=no note&&id_invoice_sent_ext=$ARG2" \
+	"http://test.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
+
+fi
+
+
+#
+## izdajmo račun in opcijsko davčno potrdimo
+#
+# fiscalize: 1 / 0 ... send to FURS for EOR or not
+#
+
+if [[ $CMD == "f1" && $ARG != "" && $ARG2 != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG&id_location=7&fiscalize=$ARG2&op-tax-id=12345678&op-name=PRODAJALEC1" \
+	"http://test.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
+
+fi
+# >> [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
+
+#
+## pridobimo EOR / ZOI / BARCODE računa 
+#
+#
+#
+
+if [[ $CMD == "fi1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG" \
+	"http://test.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
+
+fi
+
+#
+## preverimo ali so artikli na zalogi (skladišče)
+#
+# kasneje
+#

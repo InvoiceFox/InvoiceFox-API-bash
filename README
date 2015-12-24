@@ -2,18 +2,23 @@ InvoiceFox API :: bash
 ======================
 
 
-Examples of using InvoiceFox API with bash.
+Examples of using InvoiceFox API with bash. Can be used on:
 
-http://www.invoicefox.com
+https://www.invoicefox.com
+
+https://www.cebelca.biz
+
+What's the point?
+-----------------
 
 
-State
------
-
-This is all in Alpha state. We are making the API more robust and informative while working on this.
+You can see and quickly run multiple examples of using the InvoiceFox/CebelcaBIZ API.
 
 
-Files
------
+Example of use:
 
-curl-samples : examples of using curl to access the API
+  ./osnovni primeri r1 10
+
+  ././specificni-primeri fi1 80
+
+Look at the code ...
