@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 ##
 ### Čebelca.biz primeri (novi strežnik z davčnimi blagajnami)
@@ -141,6 +142,8 @@ if [[ $CMD == "fi1" && $ARG != "" ]]; then
 	"http://test.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
 
 fi
+
+# >> [[{"id":80,"tax_id":"10217177","operator_tax_id":"12345678","invoice_amount":1440.0,"location_id":"P1","register_id":"B1","zoi_code":"ad3d87a26aab4a6d5a81c8cfae4b2bac","zoi_code_dec":"230275924372432379612582134529131228076","bar_code":"230275924372432379612582134529131228076102171771512240025088","eor_code":"443d18e9-0f0a-48a6-a27d-7fcea373ef88","date_time":"2015-12-24T00:25:08","operator_name":"PRODAJALEC1"}]]
 
 #
 ## preverimo ali so artikli na zalogi (skladišče)
