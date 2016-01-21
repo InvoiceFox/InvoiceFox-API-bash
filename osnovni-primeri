@@ -79,7 +79,7 @@ if [[ $CMD == "r1" && $ARG != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG" \
-	"http://test.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
+	"https://test.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
 
 fi
 #>> ['ok',[{'id':1}]] 

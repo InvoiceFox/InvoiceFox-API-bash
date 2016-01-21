@@ -1,0 +1,27 @@
+##
+### Čebelca.biz testi (novi strežnik z davčnimi blagajnami)
+##
+#
+#
+# pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ
+#
+# ukaze pokličete npr. tako:
+#
+# ./testi t1
+#
+
+TOKEN=`cat .token`
+RES=$1
+MET=$2
+ARGS=$3
+MORE=$4
+#
+
+if [[ $RES != "" && $MET != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "$ARGS" \
+	"https://www.cebelca.biz/API?_r=$RES&_m=$MET&$MORE"
+
+fi

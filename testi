@@ -1,0 +1,98 @@
+#
+##
+### Čebelca.biz testi (novi strežnik z davčnimi blagajnami)
+##
+#
+#
+# pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ
+#
+# ukaze pokličete npr. tako:
+#
+# ./testi t1
+#
+
+TOKEN=`cat .token`
+CMD=$1
+ARG=$2
+ARG2=$3
+ARG3=$4
+
+#
+
+if [[ $CMD == "t1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=21.1.2016&date_to_pay=30.12.2016&date_served=22.12.2016&id_partner=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
+
+fi
+
+
+if [[ $CMD == "t2" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=21.1.2016&date_to_pay=30.12.2016&date_served=22.12.2016&id_partner=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-select"
+
+fi
+
+
+if [[ $CMD == "t3" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=21.1.2016&date_to_pay=30.12.2016&date_served=22.12.2016&id_partner=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart"
+
+fi
+
+
+if [[ $CMD == "t4" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=21.1.2016&date_to_pay=30.12.2016&date_served=22.12.2016&id_partner=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
+
+fi
+
+
+if [[ $CMD == "sl" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "" \
+	"https://www.cebelca.biz/API?_r=sales-location&_m=select-all"
+
+fi
+
+if [[ $CMD == "f1" && $ARG != "" && $ARG2 != "" && $ARG3 != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG&id_location=$ARG2&fiscalize=$ARG3&op-tax-id=12345678&op-name=PRODAJALEC1" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
+
+fi
+
+if [[ $CMD == "fi1" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
+
+fi
+
+
+
+if [[ $CMD == "fi2" && $ARG != "" ]]; then
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info-full"
+
+fi
