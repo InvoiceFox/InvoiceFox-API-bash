@@ -24,7 +24,7 @@ if [[ $CMD == "p0" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "" \
-	"http://test.cebelca.biz/API?_r=partner&_m=assure&_x=1"
+	"https://www.cebelca.biz/API?_r=partner&_m=assure&_x=1"
 
 fi
 #>> ['ok',[{'id':1}]]
@@ -37,7 +37,7 @@ if [[ $CMD == "p1" && $ARG != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "name=Test d.o.o.&street=Velika cesta&postal=1234&city=Ljubljan&vatid=$ARG" \
-	"http://test.cebelca.biz/API?_r=partner&_m=assure"
+	"https://www.cebelca.biz/API?_r=partner&_m=assure"
 
 fi
 #>> ['ok',[{'id':1}]]
@@ -58,7 +58,7 @@ if [[ $CMD == "rs1" && $ARG != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&taxnum=$ARG" \
-	"http://test.cebelca.biz/API?_r=invoice-sent&_m=insert-smart"
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart"
 
 fi
 #>> ['ok',[{'id':1}]] 
@@ -78,7 +78,7 @@ if [[ $CMD == "rs2" && $ARG != "" && $ARG2 != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG&id_currency=2&conv_rate=0&id_document_ext=$ARG2" \
-	"http://test.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
 
 fi
 
@@ -89,7 +89,7 @@ if [[ $CMD == "rb1" && $ARG != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "title=programming service&qty=10&mu=piece&price=120&vat=20&discount=0&id_invoice_sent=$ARG" \
-	"http://test.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+	"https://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
 
 fi
 
@@ -107,7 +107,7 @@ if [[ $CMD == "mp1" && $ARG != "" && $ARG2 != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "date_of=22.12.2015&id_invoice_sent=0&id_payment_method=$ARG&note=no note&&id_invoice_sent_ext=$ARG2" \
-	"http://test.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
+	"https://www.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
 
 fi
 
@@ -123,10 +123,30 @@ if [[ $CMD == "f1" && $ARG != "" && $ARG2 != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "id=$ARG&id_location=7&fiscalize=$ARG2&op-tax-id=12345678&op-name=PRODAJALEC1" \
-	"http://test.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
 
 fi
 # >> [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
+
+#
+## izdajmo račun brez davčnega potrjevanja (negotovinski račun) kot v primeru neaktivirane davčne blagajne
+# 
+#  če je "title" prazen ga bo program sam nastavil na naslednjo št. glede na zadnjo
+#  pri tem je treba biti pozoren da si datumi računov sledijo v istem zaporedju kot številke
+#  če si ne, potem ta metoda ni v redu, saj lahko pride do ponovitev številk
+
+
+if [[ $CMD == "f2" && $ARG != "" ]]; then # title - ARG2 je lahko ""
+
+    curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG&title=$ARG2&doctype=0" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice-2015"
+
+fi
+# >> [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
+
+
 
 #
 ## pridobimo EOR / ZOI / BARCODE računa 
@@ -139,7 +159,7 @@ if [[ $CMD == "fi1" && $ARG != "" ]]; then
     curl -v -k \
 	-u $TOKEN:x \
 	-d "id=$ARG" \
-	"http://test.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
 
 fi
 
