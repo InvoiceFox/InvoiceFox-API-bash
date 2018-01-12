@@ -144,7 +144,7 @@ if [[ $CMD == "f2" && $ARG != "" ]]; then # title - ARG2 je lahko ""
 	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice-2015"
 
 fi
-# >> [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
+# >> [[{"new_title":"18-0005"}]]
 
 
 
