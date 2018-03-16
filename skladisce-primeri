@@ -1,12 +1,29 @@
 #!/bin/bash
+#
+##
+### Čebelca.biz Skladišče primeri
+##
+#
+#
+# pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ
+#
+# ukaze pokličete npr. tako:
+#
+# ./skladisce-primeri whs?
+#
+
+TOKEN=`cat .token`
+CMD=$1
+ARG=$2
+ARG2=$3
 
 #
 ## dobimo vsa skladišča
 #
 
-if [[ $CMD == "warehouses?" ]]; then
+if [[ $CMD == "whs?" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "page=0" \
 	"https://www.cebelca.biz/API?_r=partner&_m=select-all-internal"
@@ -19,7 +36,7 @@ fi
 
 if [[ $CMD == "items?" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "page=0" \
 	"https://www.cebelca.biz/API?_r=item&_m=select-all"
@@ -41,7 +58,7 @@ fi
 
 if [[ $CMD == "invtall" && $ARG != "" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "page=0&date=$ARG&warehouse=0&filter=all" \
 	"https://www.cebelca.biz/API?_r=item&_m=select-inventory-all-internal"
@@ -63,7 +80,7 @@ fi
 
 if [[ $CMD == "invt1" && $ARG != "" && $ARG2 != "" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "page=0&date=$ARG&warehouse=$ARG2&filter=inwh" \
 	"https://www.cebelca.biz/API?_r=item&_m=select-inventory"
@@ -76,7 +93,7 @@ fi
 
 if [[ $CMD == "parts?" && $ARG != "" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "id_item_prod=$ARG" \
 	"https://www.cebelca.biz/API?_r=part&_m=select-all-for"
@@ -89,7 +106,7 @@ fi
 
 if [[ $CMD == "itemhist?" && $ARG != "" && $ARG2 != "" ]]; then
 
-curl -v -k \
+curl -k \
 	-u $TOKEN:x \
 	-d "id_item=$ARG&date=$ARG2&page=0&whid=0" \
 	"https://www.cebelca.biz/API?_r=item&_m=select-simple-history"
