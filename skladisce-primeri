@@ -1,0 +1,98 @@
+#!/bin/bash
+
+#
+## dobimo vsa skladišča
+#
+
+if [[ $CMD == "warehouses?" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "page=0" \
+	"https://www.cebelca.biz/API?_r=partner&_m=select-all-internal"
+
+fi
+
+#
+## dobimo vse artikle
+#
+
+if [[ $CMD == "items?" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "page=0" \
+	"https://www.cebelca.biz/API?_r=item&_m=select-all"
+
+fi
+
+
+#
+## dobimo zalogo artiklov v vseh skladiščih
+#
+# warehouse: ID skladišča = 0
+#
+# date: naj bo oblikovan po dd.mm.yyyy
+# 
+# filter je lahko:
+#  onstock: vrne podatke za artikle, ki so trenutno na zalogi
+#  inwh: vrne podatke za artikle, ki so kadarkoli šli skozi to skladišče
+#  all: vrne podatke za vse artikle
+
+if [[ $CMD == "invtall" && $ARG != "" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "page=0&date=$ARG&warehouse=0&filter=all" \
+	"https://www.cebelca.biz/API?_r=item&_m=select-inventory-all-internal"
+
+fi
+
+
+#
+## dobimo zalogo artiklov v specifičnem skladišču
+#
+# warehouse: ID skladišča
+#
+# date: naj bo oblikovan po dd.mm.yyyy
+# 
+# filter je lahko:
+#  onstock: vrne podatke za artikle, ki so trenutno na zalogi
+#  inwh: vrne podatke za artikle, ki so kadarkoli šli skozi to skladišče
+#  all: vrne podatke za vse artikle
+
+if [[ $CMD == "invt1" && $ARG != "" && $ARG2 != "" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "page=0&date=$ARG&warehouse=$ARG2&filter=inwh" \
+	"https://www.cebelca.biz/API?_r=item&_m=select-inventory"
+
+fi
+
+#
+## dobimo sestavo za določen artikel
+#
+
+if [[ $CMD == "parts?" && $ARG != "" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id_item_prod=$ARG" \
+	"https://www.cebelca.biz/API?_r=part&_m=select-all-for"
+
+fi
+
+#
+## dobimo zgodovino artikla
+#
+
+if [[ $CMD == "itemhist?" && $ARG != "" && $ARG2 != "" ]]; then
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id_item=$ARG&date=$ARG2&page=0&whid=0" \
+	"https://www.cebelca.biz/API?_r=item&_m=select-simple-history"
+
+fi
+
