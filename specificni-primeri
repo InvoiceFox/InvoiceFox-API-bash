@@ -122,7 +122,7 @@ if [[ $CMD == "f1" && $ARG != "" && $ARG2 != "" ]]; then
 
     curl -v -k \
 	-u $TOKEN:x \
-	-d "id=$ARG&id_location=7&fiscalize=$ARG2&op-tax-id=12345678&op-name=PRODAJALEC1" \
+	-d "id=$ARG&id_location=7&fiscalize=$ARG2&op-tax-id=12345678&op-name=PRODAJALEC1&test_mode=1" \
 	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
 
 fi
@@ -166,7 +166,40 @@ fi
 # >> [[{"id":80,"tax_id":"10217177","operator_tax_id":"12345678","invoice_amount":1440.0,"location_id":"P1","register_id":"B1","zoi_code":"ad3d87a26aab4a6d5a81c8cfae4b2bac","zoi_code_dec":"230275924372432379612582134529131228076","bar_code":"230275924372432379612582134529131228076102171771512240025088","eor_code":"443d18e9-0f0a-48a6-a27d-7fcea373ef88","date_time":"2015-12-24T00:25:08","operator_name":"PRODAJALEC1"}]]
 
 #
-## preverimo ali so artikli na zalogi (skladišče)
+## Definiramo poslovni prostoro blagajno (kot v nastavitve / davčne blagajne)
+# Če je tip A ali C potem podamo le interno oznako prostora in interno oznako blagajne. 
+# Pri B se mora podati vse podatke (glej UI)
 #
-# kasneje
 #
+
+if [[ $CMD == "fi1" && $ARG != "" && $ARG2 != "" ]]; then
+
+    curl -v -k \
+        -u $TOKEN:x \
+        -d "type=C&location_id=$ARG&register_id=$ARG2" \
+	"https://www.cebelca.biz/API?_r=sales-location&_m=insert-into"
+
+fi
+
+# vrne ID prostora
+# >> [[{"id":6}]] 
+
+#
+## Potrdimo prostor na FURS / ali testni FURS
+# test_mode=1 potrdi na testni furs, potem lahko na testni furs na ta prostor testno potrjujemo tudi račune
+#
+
+if [[ $CMD == "fi1" && $ARG != "" && $ARG2 != "" ]]; then
+
+    curl -v -k \
+        -u $TOKEN:x \
+        -d "id=$ARG&test_mode=$ARG2" \
+	"https://www.cebelca.biz/API?_r=sales-location&_m=register-at-furs"
+
+fi
+
+# vrne status
+# >> [[{"result":"OK","MessageID":"20f04862-bf0c-4ed0-822d-73e1ffc2bb0a"}]]
+
+
+
