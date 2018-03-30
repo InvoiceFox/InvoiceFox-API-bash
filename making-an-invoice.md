@@ -1,13 +1,14 @@
-# InvoiceFox / Cebelca.biz API calls
+# Making na invoice with Cebelca API
 
-
-## Making an invoice
-
-The goal of this document is to show the API calls needed to create an Invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
+The goal of this document is to show the API calls needed to create an invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
 
 You can read general API guidelines here: [General API guidelines](https://github.com/InvoiceFox/Workonomic-API-bash/blob/master/API-docs.md)
 
-Examples use curl, which is available on all platforms and you can use to test API calls directly.
+Examples use curl, which is available on all platforms and you can use to test API calls and see the results directly. 
+
+Please remember that this is not all Cebelca API provides. ANYTHING (and more) you can do by hand in our web-application, can be done via API. We are preparing API Explorer and better documentation. This is the very first version.
+
+Contact us if you have any questions: podpora AT cebelca DOT biz.
 
 
 ### Set your API toke
@@ -19,7 +20,7 @@ Get the api token at *Nastavitve > Nastavitve dostopa* (bottom of the page). Set
 
 ### Insert the customer (partner) to Cebelca
 
-Assure does just that. If the partner is already in the database it returns it's ID. If it's not it adds it and 
+Assure does just what it says. If the partner is already in the database it returns it's ID. If it's not it adds it and 
 returns it's ID.
 
 arguments:
@@ -29,6 +30,8 @@ arguments:
  * **postal** - postal code / zip code
  * **city** - self explanatory
  * **country** - self explanatory
+
+There are more data fields possible. See the webapp for field names.
 
 ````
 curl -v -k \
@@ -44,7 +47,7 @@ returns the ID of the partner:
 
 ### Add the Invoice head (option 1)
 
-Invoice consists of invoice head and multiply invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is one:
+Invoice consists of invoice head and multiple invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is a basic one:
 
 arguments
 
@@ -66,7 +69,7 @@ returns ID of the invoice:
 
 ### Add the invoice head - smart (option 2)
 
-This option helps API users to fill in some information automaticall, that would otherwise require more API calls.
+This option helps API users to fill in some information automatically, that would otherwise require more API calls or clined side info.
 
 so what's smart about it:
  * taxnum can be used instead of id_partner to find the right customer/partner, so you don't have to store the cebelca partner ID-s on your side, in this case set id_partner to 0.
@@ -133,6 +136,9 @@ curl -v -k \
 	-d "date_of=22.12.2015&id_invoice_sent=1&id_payment_method=1&note=no note&&id_invoice_sent_ext=0" \
 "https://www.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
 ````
+
+This method for example 
+
 
 ### Issue and Fiscalize the invoice
 
