@@ -5,7 +5,7 @@
 
 The goal of this document is to show the API calls needed to create an Invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
 
-You can read general API guidelines here: [https://github.com/InvoiceFox/Workonomic-API-bash/blob/master/API-docs.md](General API guidelines)
+You can read general API guidelines here: [General API guidelines](https://github.com/InvoiceFox/Workonomic-API-bash/blob/master/API-docs.md)
 
 Examples use curl, which is available on all platforms and you can use to test API calls directly.
 
