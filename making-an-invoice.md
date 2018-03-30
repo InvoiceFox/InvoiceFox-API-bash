@@ -3,7 +3,9 @@
 
 ## Making an invoice
 
-The goal of this document is to show the API calls needed to create an Invoice, fiscalize it (or not), get PDF of it and mark it paid. 
+The goal of this document is to show the API calls needed to create an Invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
+
+You can read general API guidelines here: (https://github.com/InvoiceFox/Workonomic-API-bash/blob/master/API-docs.md)[General API guidelines]
 
 Examples use curl, which is available on all platforms and you can use to test API calls directly.
 
@@ -40,7 +42,7 @@ returns the ID of the partner:
 ````
 
 
-### Add the Invoice head
+### Add the Invoice head (option 1)
 
 Invoice consists of invoice head and multiply invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is one:
 
@@ -62,6 +64,23 @@ returns ID of the invoice:
 >> ['ok',[{'id':1}]] 
 ````
 
+### Add the invoice head - smart (option 2)
+
+This option helps API users to fill in some information automaticall, that would otherwise require more API calls.
+
+so what's smart about it:
+ * taxnum can be used instead of id_partner to find the right customer/partner, so you don't have to store the cebelca partner ID-s on your side, in this case set id_partner to 0.
+ * id_document_ext can be set with your ID for this invoice (for example ID of an order **if it's unique**). Then you can use this external ID to mark invoice paid or get he PDF (which is usually separate action called later). This way you don't need to store ID-s of invoices (mapping to orders for example) on your side.
+ * if invoice has foreign currency and you set conv_rate to 0 it get's the current conv_rate from Bank of Slovenia automatically.
+
+arguments are the same as with previous call. With some additions.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=1&id_currency=2&conv_rate=0&id_document_ext=213" \
+"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
+````
 
 ### Add the invoice line (body) into the invoice (You can add more than one of course). 
 
@@ -115,7 +134,7 @@ curl -v -k \
 "https://www.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
 ````
 
-### Fiscalize invoice
+### Issue and Fiscalize the invoice
 
 In slovenia you need to fiscalize (send to Tax office) all "cash" invoices in realtime. This API call does this.
 
@@ -142,6 +161,45 @@ returns the status and EOR code:
 [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
 ````
 
+### Issue an Invoice outside of fiscalisation system
+
+If you don't have any "cash" invoices you can issue them outside the fiscal system. In this case they get the regular numbering, like 18-0001. You don't need to deal with location, operator, etc.
+
+* **id** - id of the invoice head
+* **title** - leave empty and app will define it by itself, or define it here
+* **doctype** - document type
+  * 0 - invoice
+  * 2 - credit note
+  * 3 - advance payment invoice
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=1&title=&doctype=0" \
+"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice-2015"
+````
+
+returns
+````
+[[{"new_title":"18-0005"}]]
+````
+
+
+
+### Get the fiscal info
+
+If you want to store the fiscal information of the invoice (ZOI, QR and EOR codes, etc)  use this call.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=get-fiscal-info"
+````
+returns
+````
+[[{"id":80,"tax_id":"10217177","operator_tax_id":"12345678","invoice_amount":1440.0,"location_id":"P1","register_id":"B1","zoi_code":"ad3d87a26aab4a6d5a81c8cfae4b2bac","zoi_code_dec":"230275924372432379612582134529131228076","bar_code":"230275924372432379612582134529131228076102171771512240025088","eor_code":"443d18e9-0f0a-48a6-a27d-7fcea373ef88","date_time":"2015-12-24T00:25:08","operator_name":"PRODAJALEC1"}]]
+````
 
 ### Get the invoice PDF
 
@@ -162,13 +220,36 @@ Before you can fiscalize invoices you need to register location with Tax Office 
 
 You can do this in Web interface too. This is the way to do it via API. This way you also get and ID of location automatically.
 
+arguments
+* **type** - type of location
+  * A - movable object (car, taxi, van, vehicle)
+  * B - location on fixed address
+  * C - electronic device (movable location which is where electronic device with program is)
+* **location_id** - internal id of location (you determine it, must be unique in your company)
+* **register_id** - internal id of register (you determine it, must be unique in this location)
+
 ````
 curl -v -k \
         -u $TOKEN:x \
-        -d "type=C&location_id=$ARG&register_id=$ARG2" \
+        -d "type=C&location_id=TEST1&register_id=B1" \
 "https://www.cebelca.biz/API?_r=sales-location&_m=insert-into"
 ````
 returns ID of added location:
 ````
-[[{"id":6}]] 
+[[{"id":1}]] 
 ````
+
+### Register location with Tax office (FURS) or TEST FURS
+
+arguments
+* **id** - ID of location from previous call
+* **test_mode** - register with TEST or real FURS server (1 or 0)
+
+````
+curl -v -k \
+        -u $TOKEN:x \
+        -d "id=1&test_mode=1" \
+"https://www.cebelca.biz/API?_r=sales-location&_m=register-at-furs"
+````
+
+
