@@ -83,10 +83,9 @@ curl -v -k \
 ````
 
 
-### Add payment to invoice
+### Add payment to invoice (option 1)
 
-You can mark invoice paid in full without needing to have a amount of payment (value of invoice) on the client side.
-The other option is to add payment to invoice, where you also set the amount. That will be in extended documentation.
+To add information about payment to invoice use the method below. Here you also set the amount of payment so it can be partial payment. You can add multiple payment lines to invoice, with different amounts, dates, methods.
 
 * **date_of** - self explanatory
 * **amount** - amount paid, decimal number
@@ -103,14 +102,45 @@ curl -v -k \
 	"http://test.cebelca.biz/API?_r=invoice-sent-p&_m=insert-into"
 ````
 
+### Mark invoice paid (option 2)
 
-### Fiscalize invoivce
+If you just want to mark invoice paid and don't want to deal with amounts on your side you can use mark-paid method.
+
+arguments are the same as above.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_of=22.12.2015&id_invoice_sent=1&id_payment_method=1&note=no note&&id_invoice_sent_ext=0" \
+"https://www.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
+````
+
+### Fiscalize invoice
 
 In slovenia you need to fiscalize (send to Tax office) all "cash" invoices in realtime. This API call does this.
 
 "Cash" invoices are all invoices except invoices paid by direct transaction to your bank account (wire transfer) or PayPal (because PayPal is also considered your bank account). All other like payment by cash, credit card, by post are considered "cash" and must be fiscalized. Non "cash" payments can also be fiscalized, but all "cash" payments **MUST** be fiscalized.
 
+arguments:
 
+* **id** - id of the invoice
+* **id_location** - fiscal invoice needs predefined location (more about that below). Location must also be sent to Tax Office - registered with them.
+* **fiscalize** - you can have optional fiscalisation where you only fiscalize "cash" invoices. If you aren't in fiscal system at all you don't need to define location and you don't use this call at all. Also invoice numbering is different in that case. More about it later. Can be 1 or 0.
+* **op-tax-id** - operators tax id. Personal tax ID of the person issuing an invoice (gets sent to Tax office)
+* **op-name** - operators handle/nickname (can be name), is printed on invoice
+* **test_mode** - fiscalizes to TEST Tax Office (FURS) server. Before you do this you must register your *location* at TEST FURS server too. More about it below. Can be 1 or 0.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=$ARG&id_location=7&fiscalize=1&op-tax-id=12345678&op-name=PRODAJALEC1&test_mode=1" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
+````
+
+returns the status and EOR code:
+````
+[[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
+````
 
 
 ### Get the invoice PDF
@@ -124,3 +154,21 @@ curl -v -k \
 returns binary PDF data.
 
 
+## More about locations
+
+Before you can fiscalize invoices you need to register location with Tax Office (FURS). If you want to TEST fiscalize invoices you need to register location to TEST FURS server too (test_mode=1 in both cases).
+
+### Add a location via API
+
+You can do this in Web interface too. This is the way to do it via API. This way you also get and ID of location automatically.
+
+````
+curl -v -k \
+        -u $TOKEN:x \
+        -d "type=C&location_id=$ARG&register_id=$ARG2" \
+"https://www.cebelca.biz/API?_r=sales-location&_m=insert-into"
+````
+returns ID of added location:
+````
+[[{"id":6}]] 
+````
