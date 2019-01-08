@@ -60,7 +60,7 @@ arguments
 curl -v -k \
 	-u $TOKEN:x \
 	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG" \
-	"https://test.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
 ````
 returns ID of the invoice:
 ````
@@ -101,7 +101,7 @@ You then add one or more invoice body lines. The contents of the invoice.
 curl -v -k \
 	-u $TOKEN:x \
 	-d "title=programming&qty=10&mu=hour&price=50&vat=22&discount=0&id_invoice_sent=1" \
-	"http://test.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+	"http://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
 ````
 
 
@@ -121,7 +121,7 @@ To add information about payment to invoice use the method below. Here you also 
 curl -v -k \
 	-u $TOKEN:x \
 	-d "date_of=22.12.2015&amount=10&id_payment_method=1&id_invoice_sent=1" \
-	"http://test.cebelca.biz/API?_r=invoice-sent-p&_m=insert-into"
+	"http://www.cebelca.biz/API?_r=invoice-sent-p&_m=insert-into"
 ````
 
 ### Mark invoice paid (option 2)
