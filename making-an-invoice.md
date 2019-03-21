@@ -155,6 +155,8 @@ arguments:
 * **op-name** - operators handle/nickname (can be name), is printed on invoice
 * **test_mode** - fiscalizes to TEST Tax Office (FURS) server. Before you do this you must register your *location* at TEST FURS server too. More about it below. Can be 1 or 0.
 
+**WARNING**: Because FURS changed it's rules, that must be implemented on your side before 30.6.2019 parameter **fiscalize** is deprecated. Currently it's still there but on 20.04 API call will return an error if fiscalize in set to 0. Invoices that are fiscalized, by the new rule, must strictly follow eachother. There can't be any gaps between them. So non-fiscalized invoices must be numbered in a differeny numbering scheme. If you have optional fiscalisation instead of fiscalize=0 you should now call method describer in the next chapter: **finalize-invoice-2015**
+
 ````
 curl -v -k \
 	-u $TOKEN:x \
