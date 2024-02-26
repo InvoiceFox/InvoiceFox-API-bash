@@ -2,10 +2,21 @@
   - [Set your API token](#set-your-api-token)
   - [Insert the customer](#insert-the-customer)
   - [Add the invoice head](#add-the-invoice-head)
-  - ...
+  - [Add the invoice head - smart](#add-the-invoice-head-smart)
+  - [Add the invoice lines](#add-the-invoice-lines)
+  - [Add payment to invoice - option 1](#)
+  - [Mark invoice paid - option 2](#)
+  - [Issue and Fiscalize the invoice](#)
+  - [Issue a regular invoice - noncash](#)
+  - [Get the fiscal info](#)
+  - [Get the invoice PDF](#)
+- [Morea about location](#)
+  - [Add a location via API](#)
+  - [Register location with Tax office](#)
 - [Making a proforma invoice](#making-a-proforma-invoice)
   - [Add the proforma head](#add-the-proforma-head)
   - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
+  - [Get the proforma PDF](#get-the-proforma-pdf)
 
 # Making na invoice with Cebelca API
 
@@ -50,7 +61,9 @@ curl -v -k \
 ````
 returns the ID of the partner: 
 ````
-['ok',[{'id':1}]]
+['ok',[{'id':123}]]
+
+PARID=123
 ````
 
 
@@ -76,7 +89,7 @@ returns ID of the invoice:
 >> ['ok',[{'id':1}]] 
 ````
 
-### Add the invoice head - smart (option 2)
+### Add the invoice head - smart
 
 This option helps API users to fill in some information automatically, that would otherwise require more API calls or clined side info.
 
@@ -94,7 +107,7 @@ curl -v -k \
 "https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
 ````
 
-### Add the invoice line (body) into the invoice (You can add more than one of course). 
+### Add the invoice lines 
 
 You then add one or more invoice body lines. The contents of the invoice.
 
@@ -114,7 +127,7 @@ curl -v -k \
 ````
 
 
-### Add payment to invoice (option 1)
+### Add payment to invoice - option 1
 
 To add information about payment to invoice use the method below. Here you also set the amount of payment so it can be partial payment. You can add multiple payment lines to invoice, with different amounts, dates, methods.
 
@@ -133,7 +146,7 @@ curl -v -k \
 	"http://www.cebelca.biz/API?_r=invoice-sent-p&_m=insert-into"
 ````
 
-### Mark invoice paid (option 2)
+### Mark invoice paid - option 2
 
 If you just want to mark invoice paid and don't want to deal with amounts on your side you can use mark-paid method.
 
@@ -181,7 +194,7 @@ returns the status and EOR code:
 [[{"docnum":"P1-B1-42","eor":"443d18e9-0f0a-48a6-a27d-7fcea373ef88"}]]
 ````
 
-### Issue an Invoice outside of fiscalisation system
+### Issue a regular invoice - noncash
 
 If you don't have any "cash" invoices you can issue them outside the fiscal system. In this case they get the regular numbering, like 18-0001. You don't need to deal with location, operator, etc.
 
@@ -259,7 +272,7 @@ returns ID of added location:
 [[{"id":1}]] 
 ````
 
-### Register location with Tax office (FURS) or TEST FURS
+### Register location with Tax office
 
 arguments
 * **id** - ID of location from previous call
@@ -282,17 +295,20 @@ arguments
 
 * **date_sent** - date when proforma was issued, formatted in dd.mm.yyyy.
 * **days_valid** - integer number of days that proforma is valid
-* **id_partner** - ID of the partner, gotten from call: [Insert your customer](#insert-your-customer-partner) 
+* **id_partner** - ID of the partner, gotten from call: [Insert your customer](#insert-your-customer-partner)
+* **taxnum** - can be 0 or the taxnumber of the customer. If id_partner (customer id) is zero "0", then it uses taxnum to find a customer in your list this way
 
 ````
-curl -v -k \
-	-u $TOKEN:x \
-	-d "date_sent=22.12.2015&days_valid=30&id_partner=$ARG" \
-	"https://www.cebelca.biz/API?_r=preinvoice&_m=insert-into"
+curl -v -k
+	-u $TOKEN:x
+	-d "date_sent=22.12.2015&days_valid=30&id_partner=$PARID&taxnum=0"
+	"https://www.cebelca.biz/API?_r=preinvoice&_m=insert-smart"
 ````
 returns ID of the proforma invoice:
 ````
->> ['ok',[{'id':202}]] 
+>> ['ok',[{'id':202}]]
+
+PROID=202
 ````
 
 ### Add the proforma invoice lines 
@@ -308,10 +324,20 @@ You then add one or more proforma body lines. The contents of the proforma.
 * **id_preinvoice** - ID of invoice head, gotten from previous call
 
 ````
-curl -v -k \
-	-u $TOKEN:x \
-	-d "title=programming&qty=10&mu=hour&price=50&vat=22&discount=0&id_preinvoice=202" \
-	"http://www.cebelca.biz/API?_r=preinvoice-b&_m=insert-into"
+curl -v -k
+	-u $TOKEN:x
+	-d "title=programming&qty=10&mu=hour&price=50&vat=22&discount=0&id_preinvoice=$PROID"
+	"https://www.cebelca.biz/API?_r=preinvoice-b&_m=insert-into"
 ````
+
+### Get the proforma PDF
+
+````
+curl -v -k \
+	-u $TOKEN:x -J -O \
+	"https://www.cebelca.biz/API-pdf?id=$PROID&format=PDF&doctitle=Predra%C4%8Dun%20%C5%A1t.&lang=si&disposition=inline&res=preinvoice&preview=0"
+````
+
+returns binary PDF data and save it to file.
 
 
