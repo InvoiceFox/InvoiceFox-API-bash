@@ -3,7 +3,7 @@
   - [Insert the customer](#insert-the-customer)
   - [Add the invoice head](#add-the-invoice-head)
   - ...
-- [Making a proforma invoice](#making-a-proforma-invoice])
+- [Making a proforma invoice](#making-a-proforma-invoice)
   - [Add the proforma head](#add-the-proforma-head)
   - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
 
