@@ -1,24 +1,24 @@
-- [Making na invoice with Cebelca API](#making-an-invoice-with-cebelca-api)
+- [Making an invoice with Cebelca API](#making-an-invoice-with-cebelca-api)
   - [Set your API token](#set-your-api-token)
   - [Insert the customer](#insert-the-customer)
   - [Add the invoice head](#add-the-invoice-head)
-  - [Add the invoice head - smart](#add-the-invoice-head-smart)
+  - [Add the invoice head - smart](#add-the-invoice-head---smart)
   - [Add the invoice lines](#add-the-invoice-lines)
-  - [Add payment to invoice - option 1](#)
-  - [Mark invoice paid - option 2](#)
-  - [Issue and Fiscalize the invoice](#)
-  - [Issue a regular invoice - noncash](#)
-  - [Get the fiscal info](#)
-  - [Get the invoice PDF](#)
-- [Morea about location](#)
-  - [Add a location via API](#)
-  - [Register location with Tax office](#)
+  - [Add payment to invoice - option 1](#add-payment-to-invoice---option-1)
+  - [Mark invoice paid - option 2](#mark-invoice-paid---option-2)
+  - [Issue and Fiscalize the invoice](#issue-and-fiscalize-the-invoice)
+  - [Issue a regular invoice - noncash](#issue-a-regular-invoice---noncash)
+  - [Get the fiscal info](#get-the-fiscal-info)
+  - [Get the invoice PDF](#get-the-invoice-pdf)
+- [Morea about location](#more-about-locations)
+  - [Add a location via API](#add-a-location-via-api)
+  - [Register location with Tax office](#register-location-with-tax-office)
 - [Making a proforma invoice](#making-a-proforma-invoice)
   - [Add the proforma head](#add-the-proforma-head)
   - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
   - [Get the proforma PDF](#get-the-proforma-pdf)
 
-# Making na invoice with Cebelca API
+# Making an invoice with Cebelca API
 
 The goal of this document is to show the API calls needed to create an invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
 
