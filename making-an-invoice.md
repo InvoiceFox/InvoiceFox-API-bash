@@ -1,3 +1,12 @@
+- [Making na invoice with Cebelca API](#making-an-invoice-with-cebelca-api)
+  - [Set your API token](#set-your-api-token)
+  - [Insert the customer](#insert-the-customer)
+  - [Add the invoice head](#add-the-invoice-head)
+  - ...
+- [Making a proforma invoice](making-an-proforma-invoice])
+  - [Add the proforma head](#add-the-proforma-head)
+  - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
+
 # Making na invoice with Cebelca API
 
 The goal of this document is to show the API calls needed to create an invoice, fiscalize it (or not), get PDF of it and mark it paid. Some actions can be performed via different calls, depending what is best in your situation. 
@@ -11,14 +20,14 @@ Please remember that this is not all Cebelca API provides. ANYTHING (and more) y
 Contact us if you have any questions: podpora AT cebelca DOT biz.
 
 
-### Set your API toke
+### Set your API token
 
 Get the api token at *Nastavitve > Nastavitve dostopa* (bottom of the page). Set it as environmental variable in your shell.
 
     TOKEN=`cat .token`
 
 
-### Insert the customer (partner) to Cebelca
+### Insert the customer
 
 Assure does just what it says. If the partner is already in the database it returns it's ID. If it's not it adds it and 
 returns it's ID.
@@ -45,7 +54,7 @@ returns the ID of the partner:
 ````
 
 
-### Add the Invoice head (option 1)
+### Add the Invoice head
 
 Invoice consists of invoice head and multiple invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is a basic one:
 
@@ -261,6 +270,48 @@ curl -v -k \
         -u $TOKEN:x \
         -d "id=1&test_mode=1" \
 "https://www.cebelca.biz/API?_r=sales-location&_m=register-at-furs"
+````
+
+# Making a proforma invoice
+
+### Add the proforma head
+
+Proforma invoice consists of document head and multiple proforma body lines. First you add the Proforma head and get the ID of added proforma:
+
+arguments
+
+* **date_sent** - date when proforma was issued, formatted in dd.mm.yyyy.
+* **days_valid** - integer number of days that proforma is valid
+* **id_partner** - ID of the partner, gotten from call: [Insert your customer](#insert-your-customer-partner) 
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&days_valid=30&id_partner=$ARG" \
+	"https://www.cebelca.biz/API?_r=preinvoice&_m=insert-into"
+````
+returns ID of the proforma invoice:
+````
+>> ['ok',[{'id':202}]] 
+````
+
+### Add the proforma invoice lines 
+
+You then add one or more proforma body lines. The contents of the proforma.
+
+* **title** - name or description of the service / item you sold (unlimited text)
+* **qty** - quantity of items sold (decimal number)
+* **mu** - measuring unit (like hour, piece, kg)
+* **price** - price per unit (decimal)
+* **vat** - Value Added Tax (or tax in general) in percentage, decimal. For Slovenia it's 0, 9.5 or 22 currently.
+* **discount** - discount in percentage, decimal.
+* **id_preinvoice** - ID of invoice head, gotten from previous call
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "title=programming&qty=10&mu=hour&price=50&vat=22&discount=0&id_preinvoice=202" \
+	"http://www.cebelca.biz/API?_r=preinvoice-b&_m=insert-into"
 ````
 
 
