@@ -1,22 +1,27 @@
 - [Making an invoice with Cebelca API](#making-an-invoice-with-cebelca-api)
   - [Set your API token](#set-your-api-token)
   - [Insert the customer](#insert-the-customer)
-  - [Add the invoice head](#add-the-invoice-head)
-  - [Add the invoice head - smart](#add-the-invoice-head---smart)
-  - [Add the invoice lines](#add-the-invoice-lines)
-  - [Add payment to invoice - option 1](#add-payment-to-invoice---option-1)
-  - [Mark invoice paid - option 2](#mark-invoice-paid---option-2)
-  - [Issue and Fiscalize the invoice](#issue-and-fiscalize-the-invoice)
-  - [Issue a regular invoice - noncash](#issue-a-regular-invoice---noncash)
-  - [Get the fiscal info](#get-the-fiscal-info)
+  - [Creating invoice](#creating-invoice)
+    - [Add the invoice head](#add-the-invoice-head)
+    - [Add the invoice head - smart](#add-the-invoice-head---smart)
+    - [Add the invoice lines](#add-the-invoice-lines)
+    - [Add payment to invoice - option 1](#add-payment-to-invoice---option-1)
+    - [Mark invoice paid - option 2](#mark-invoice-paid---option-2)
+  - [Finalizing the invoice](#finalizing-the-invoice)
+    - [Issue and Fiscalize the invoice](#issue-and-fiscalize-the-invoice)
+    - [Issue a regular invoice - noncash](#issue-a-regular-invoice---noncash)
+    - [Get the fiscal info](#get-the-fiscal-info)
   - [Get the invoice PDF](#get-the-invoice-pdf)
-- [Morea about location](#more-about-locations)
-  - [Add a location via API](#add-a-location-via-api)
-  - [Register location with Tax office](#register-location-with-tax-office)
-- [Making a proforma invoice](#making-a-proforma-invoice)
-  - [Add the proforma head](#add-the-proforma-head)
-  - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
+  - [Using external ID](using-external-id)
+  - [More about location](#more-about-locations)
+    - [Add a location via API](#add-a-location-via-api)
+    - [Register location with Tax office](#register-location-with-tax-office)
+- [Proforma invoice](#proforma-invoice)
+  - [Creating proforma](#creating-proforma)
+    - [Add the proforma head](#add-the-proforma-head)
+    - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
   - [Get the proforma PDF](#get-the-proforma-pdf)
+  - [From proforma to invoice](#from-proforma-to-invoice)
 
 # Making an invoice with Cebelca API
 
@@ -31,14 +36,14 @@ Please remember that this is not all Cebelca API provides. ANYTHING (and more) y
 Contact us if you have any questions: podpora AT cebelca DOT biz.
 
 
-### Set your API token
+## Set your API token
 
 Get the api token at *Nastavitve > Nastavitve dostopa* (bottom of the page). Set it as environmental variable in your shell.
 
     TOKEN=`cat .token`
 
 
-### Insert the customer
+## Insert the customer
 
 Assure does just what it says. If the partner is already in the database it returns it's ID. If it's not it adds it and 
 returns it's ID.
@@ -66,8 +71,9 @@ returns the ID of the partner:
 PARID=123
 ````
 
+## Creating invoice
 
-### Add the Invoice head
+#### Add the Invoice head
 
 Invoice consists of invoice head and multiple invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is a basic one:
 
@@ -161,6 +167,7 @@ curl -v -k \
 
 This method for example 
 
+## Finalizing the invoice
 
 ### Issue and Fiscalize the invoice
 
@@ -217,8 +224,6 @@ returns
 [[{"new_title":"18-0005"}]]
 ````
 
-
-
 ### Get the fiscal info
 
 If you want to store the fiscal information of the invoice (ZOI, QR and EOR codes, etc)  use this call.
@@ -234,7 +239,7 @@ returns
 [[{"id":80,"tax_id":"10217177","operator_tax_id":"12345678","invoice_amount":1440.0,"location_id":"P1","register_id":"B1","zoi_code":"ad3d87a26aab4a6d5a81c8cfae4b2bac","zoi_code_dec":"230275924372432379612582134529131228076","bar_code":"230275924372432379612582134529131228076102171771512240025088","eor_code":"443d18e9-0f0a-48a6-a27d-7fcea373ef88","date_time":"2015-12-24T00:25:08","operator_name":"PRODAJALEC1"}]]
 ````
 
-### Get the invoice PDF
+## Get the invoice PDF
 
 ````
 curl -v -k \
@@ -244,12 +249,19 @@ curl -v -k \
 
 returns binary PDF data.
 
+## Using external ID
 
-## More about locations
+During the steps shown above you need to remember (or store) the invoice ID. You get that ID when you create the invoice head. But there is another option. When 
+you create invoice head you can define your external ID. This is ID of the order (or something similat) that you already have in your system. Then when you make calls to ....:::::....
+you just provide this external ID that you already have on your side or in your system.
+
+
+
+# More about locations
 
 Before you can fiscalize invoices you need to register location with Tax Office (FURS). If you want to TEST fiscalize invoices you need to register location to TEST FURS server too (test_mode=1 in both cases).
 
-### Add a location via API
+## Add a location via API
 
 You can do this in Web interface too. This is the way to do it via API. This way you also get and ID of location automatically.
 
@@ -272,7 +284,7 @@ returns ID of added location:
 [[{"id":1}]] 
 ````
 
-### Register location with Tax office
+## Register location with Tax office
 
 arguments
 * **id** - ID of location from previous call
@@ -285,7 +297,9 @@ curl -v -k \
 "https://www.cebelca.biz/API?_r=sales-location&_m=register-at-furs"
 ````
 
-# Making a proforma invoice
+# Proforma invoice
+
+## Creating proforma
 
 ### Add the proforma head
 
@@ -330,7 +344,7 @@ curl -v -k
 	"https://www.cebelca.biz/API?_r=preinvoice-b&_m=insert-into"
 ````
 
-### Get the proforma PDF
+## Get the proforma PDF
 
 ````
 curl -v -k \
@@ -341,3 +355,4 @@ curl -v -k \
 returns binary PDF data and save it to file.
 
 
+## From proforma to invoice
