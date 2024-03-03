@@ -12,7 +12,7 @@
     - [Issue a regular invoice - noncash](#issue-a-regular-invoice---noncash)
     - [Get the fiscal info](#get-the-fiscal-info)
   - [Get the invoice PDF](#get-the-invoice-pdf)
-  - [Using external ID](using-external-id)
+  - [Using external ID](#using-external-id)
   - [More about location](#more-about-locations)
     - [Add a location via API](#add-a-location-via-api)
     - [Register location with Tax office](#register-location-with-tax-office)
@@ -255,7 +255,46 @@ During the steps shown above you need to remember (or store) the invoice ID. You
 you create invoice head you can define your external ID. This is ID of the order (or something similat) that you already have in your system. Then when you make calls to ....:::::....
 you just provide this external ID that you already have on your side or in your system.
 
+When you create invoice head using insert-smart-2 use the **id_document_ext** argument.
 
+````
+EXTERN_ID=1234
+
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG&id_currency=2&conv_rate=0&id_document_ext=$EXTERN_ID" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-smart-2"
+````
+
+To add the line items (services) to the invoice you use the normal invoice ID, that you receive after creating a invoice head above. Because you do this inside same routin
+you have the ID right there so this is not problematic.
+
+You can then (later) **fiscalize cash** invoices by sending the same external ID as **id_invoice_sent_ext** argument:
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=0&id_location=7&fiscalize=1&op-tax-id=12345678&op-name=PRODAJALEC1&test_mode=1&id_invoice_sent_ext=$EXTERN_ID" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-invoice"
+````
+
+For **non-cash** invoices you can finalize them using **id_invoice_sent_ext** also:
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=1&title=&doctype=0" \
+"https://www.cebelca.biz/API?_r=invoice-sent&_m=finalize-noncash-invoice&id_invoice_sent_ext=$EXTERN_ID"
+````
+
+Mark them **paid** using external ID:
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_of=22.12.2015&id_invoice_sent=0&id_payment_method=1&note=no note&&id_invoice_sent_ext=$EXTERN_ID" \
+"https://www.cebelca.biz/API?_r=invoice-sent-p&_m=mark-paid"
+````
 
 # More about locations
 
@@ -356,3 +395,14 @@ returns binary PDF data and save it to file.
 
 
 ## From proforma to invoice
+
+If you have a proforma or estimate already made, you can turn in into an invoice in one API call.
+
+````
+PROFORMA_ID=42
+
+curl -v -k
+	-u $TOKEN:x
+	-d "id=$PROFORMA_ID&date_sent=03.03.2024&date_to_pay=23.03.2024&date_served=03.03.2024"
+	"https://www.cebelca.biz/API?_r=preinvoice&_m=make-invoice-from"
+````
