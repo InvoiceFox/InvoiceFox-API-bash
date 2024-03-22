@@ -27,6 +27,41 @@ curl -k \
 
 ## Add items
 
+````
+curl -k \
+	-u $TOKEN:x \
+	-d "code=T303&descr=opis izdelka&price=81.9672&unit=kos&tax=22&sales_item=0&exter_code=TEX1&weight=0.75" \
+	"https://www.cebelca.biz/API?_r=item&_m=insert-into"
+````
+
+All possible fields are:
+
+* **code: required** - Item SKU or short name
+* **descr: optional ""** - Item description or name
+* **price: required and decimal** - Net price, price without tax, preferably on at least 4 decimals if you want Gross price to come exact
+* **unit: optional ""** - unit of quantity: piece, kg, litre
+* **tax: required** - tax level: 22, 9.5, ...
+* ean_code: optional "" - barcode
+* lead_time: optional 0 and integer
+* min_order: optional 0 and integer
+* notes: optional ""
+* extern_code: optional ""
+* dont_inventory: optional 0 - if 1 inventory for this item won't be calculated and checked 
+* **sales_item: optional 0** - 0 for sales_item (reverse)
+* tags: optional ""
+* max_disct: optional "" - maximal discount
+* madein: optional ""
+* weight: optional "" - in kg
+* tariff_num: optional ""
+* pack_paper: optional "0" and decimal - packaging properties, reports can be generated from this
+* pack_plastic: optional "0" and decimal
+* pack_wood: optional "0" and decimal
+* pack_metals: optional "0" and decimal
+* pack_glass: optional "0" and decimal
+* pack_other: optional "0" and decimal
+* location: optional "" - location in the inventory
+* disabled: optional "0" and integer - if disabled it won't show in any of the lists
+
 ## Create outgoing inventory document from invoice
 
 * **date_created** - date when items go out of the warehouse dd.mm.yyyy.
