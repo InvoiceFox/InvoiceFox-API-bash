@@ -24,6 +24,11 @@ curl -k \
 	-d "page=0" \
 	"https://www.cebelca.biz/API?_r=item&_m=select-all"
 ````
+returns items:
+
+````
+[[{"id":1002,"code":" KX12-2332","descr":"Darilni paket","price":21.923442,"unit":"kos","tax":22.0,"ean":null,"ean_code":"124378211","lead_time":0,"min_order":1.0,"notes":"","extern_code":"","dont_inventory":0,"sales_item":0,"tags":"","max_disct":"","madein":"","weight":"","tariff_num":"","pack_paper":0.0,"pack_plastic":0.0,"pack_wood":0.0,"pack_metals":0.0,"pack_glass":0.0,"pack_other":0.0,"location":"","disabled":0},...]
+````
 
 ## Add items
 
@@ -32,6 +37,10 @@ curl -k \
 	-u $TOKEN:x \
 	-d "code=T303&descr=opis izdelka&price=81.9672&unit=kos&tax=22&sales_item=0&exter_code=TEX1&weight=0.75" \
 	"https://www.cebelca.biz/API?_r=item&_m=insert-into"
+````
+returns id of the new item:
+````
+[[{"id":1268}]]
 ````
 
 All possible fields are:
@@ -78,7 +87,8 @@ curl -v -k \
 	-d "id_invoice_sent=$INVOICE_ID&date_created=30.03.2024&doctype=1&docsubtype=0&id_contact_from=$WAREHOUSE_ID&id_contact_to=$CUSTOMER_ID" \
 	"https://www.cebelca.biz/API?_r=transfer&_m=make-inventory-doc-smart"
 ````
+
 returns the ID of the partner: 
 ````
-['ok',[{'id':123}]]
+[[{"ok":"DONE","docnum":"24-0005"}]]
 ````
