@@ -4,14 +4,14 @@
 ### Čebelca.biz primeri (novi strežnik z davčnimi blagajnami)
 ##
 #
-# namen: predstaviti osnovne, mogoče za API niti ne optimalne ukaze Čebelca.biz API-ja
-# če potrebujete primer lahko pogledate kako stvari dela spletna aplikacija, saj uporablja isti api
-# pripravljamo pa tudi "api-explorer" in uradno dokumentacijo. Oboje pride ven, ko uradno izdamo API 
-# (to bo ko naredimo da bo možno generirati več api ključev, jim določiti pravice in jih zakleniti na IP)
+# Namen: predstaviti osnovne, mogoče za API niti ne optimalne, ukaze Čebelca.biz API-ja.
+# Če potrebujete primer, lahko pogledate kako stvari dela spletna aplikacija, saj uporablja isti API.
+# Pripravljamo pa tudi "api-explorer" in uradno dokumentacijo. Oboje pride ven, ko uradno izdamo API 
+# (to bo ko naredimo, da bo možno generirati več api ključev, jim določiti pravice in jih zakleniti na IP).
 #
-# pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ
+# Pred pričetkom v datoteko .token vpišite Čebelca.biz API ključ.
 #
-# ukaze pokličete npr. tako:
+# Ukaze pokličete npr. tako:
 #
 # ./curl-samples.bash r1 12
 #
@@ -58,7 +58,7 @@ if [[ $CMD == "r0c" ]]; then
 fi
 # dobimo validacijske napake v JSON obliki, eno manj
 
-# zagotovimo partnerja (če točno tak že obstaja pridobi ID partnerja, će še ne ga doda in pridobi ID partnerja)
+# zagotovimo partnerja (če točno tak že obstaja pridobi ID partnerja, če še ne ga doda in pridobi ID partnerja)
 
 if [[ $CMD == "p1" ]]; then
 
@@ -72,7 +72,7 @@ fi
 
 
 #
-## dodajmo galvo računa na osnovni način
+## dodajmo glavo računa na osnovni način
 #
 
 if [[ $CMD == "r1" && $ARG != "" ]]; then
@@ -86,7 +86,7 @@ fi
 #>> ['ok',[{'id':1}]] 
 
 #
-## dodajmo postavko v račun . paramaeter $2 mora vsebovati ID glave računa (rezultat prejšnje zahteve) 
+## dodajmo postavko v račun . parameter $2 mora vsebovati ID glave računa (rezultat prejšnje zahteve) 
 #
 
 if [[ $CMD == "rb1" && $ARG != "" ]]; then
