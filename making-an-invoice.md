@@ -22,6 +22,12 @@
     - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
   - [Get the proforma PDF](#get-the-proforma-pdf)
   - [From proforma to invoice](#from-proforma-to-invoice)
+  - [Manually creating final invoice]()
+    - [Final invoice head](final-invoice-head)
+    - [Add the final invoice lines](add-the-final-invoice-lines)
+  - [Advance and final invoice from proforma](#advance-and-final-invoice-from-proforma)
+    - [Create advance invoice](create-advance-invoice)
+    - [Create final invoice](create-final-invoice)
 
 # Making an invoice with Cebelca API
 
