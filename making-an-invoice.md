@@ -408,7 +408,7 @@ curl -v -k
 ````
 
 
-## Creating Advance and Final Invoice and more
+## Other types of invoices
 
 #### Invoice doctypes
 
@@ -420,7 +420,9 @@ When you are creating invoice head you can set the doctype to define invoice as 
 * 3 - cancelation
 * 10 - final invoice
 
-#### Example of creating a final invoice
+## Manually creating final invoice
+
+#### Final invoice head
 
 Invoice consists of invoice head and multiple invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is a basic one:
 
@@ -486,4 +488,31 @@ curl -v -k \
 	"https://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
 ````
 
-#### Advance and final invoice from proforma
+## Advance and final invoice from proforma
+
+If you have a Proforma invoice for the correct invoice and amount, you can create advance invoices and also a final invoice in a simpler way.
+
+This mimics the Cebelca BIZ UI on Proforma > Open and table "Avansni računi" at the bottom of proforma.
+
+#### Create advance invoice
+
+For this you just need ID of proforma, dates of invoice and an amout of advance payment.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "docnum=&date_sent=01.05.2025&date_serverd=01.05.2025&date_to_pay=01.05.2025&price=300&id_preinvoice=31" \
+	"https://www.cebelca.biz/API?_r=preinvoice&_m=make-advance-invoice"
+````
+
+#### Create final invoice
+
+When items are served you create a final invoice. You just need an ID of preinvoice. It will take items from preinvoice, all advances that you created with 
+the method above and automatically create a final invoice like we created it manually by procedure above.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id=31&make_final_invoice=1" \
+	"https://www.cebelca.biz/API?_r=preinvoice&_m=make-invoice-from"
+````
