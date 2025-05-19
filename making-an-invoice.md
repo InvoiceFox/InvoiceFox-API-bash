@@ -406,3 +406,84 @@ curl -v -k
 	-d "id=$PROFORMA_ID&date_sent=03.03.2024&date_to_pay=23.03.2024&date_served=03.03.2024"
 	"https://www.cebelca.biz/API?_r=preinvoice&_m=make-invoice-from"
 ````
+
+
+## Creating Advance and Final Invoice and more
+
+#### Invoice doctypes
+
+When you are creating invoice head you can set the doctype to define invoice as the regular invoice, advance invoice, credit note (dobropis), or cancelation (storno). Other data is the same.
+
+* 0 - regular invoice
+* 1 - advance invoice
+* 2 - credit note
+* 3 - cancelation
+* 10 - final invoice
+
+#### Example of creating a final invoice
+
+Invoice consists of invoice head and multiple invoice body lines. First you add the Invoice head and get the ID of added invoice. API offers multiple ways of adding an invoice, some more suitable for specific situatuions. This is a basic one:
+
+arguments
+
+* **date_sent** - date when invoice was issued, formatted in dd.mm.yyyy.
+* **date_to_pay** - date to which invoice should be payed. If invoice is already paid when issued, you can show that too.
+* **date_served** - date when service or item was delivered. Required in Slovenia. Could also be two dates.
+* **id_partner** - ID of the partner, gotten from previous call.
+* **doctype** - 10
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_sent=22.12.2015&date_to_pay=30.12.2015&date_served=22.12.2015&id_partner=$ARG&doctype=10" \
+	"https://www.cebelca.biz/API?_r=invoice-sent&_m=insert-into"
+````
+returns ID of the invoice:
+````
+>> ['ok',[{'id':100}]] 
+````
+
+### Add the final invoice lines 
+
+Final invoice has to list all the services or items you are billing and below them, at least two additional somewhat special lines. 
+
+First one should have value zero (0) and should be a placeholder where PDF will show the Sum and VAT of all lines above it.
+
+Next one should represent an already paid and billed advance invoice and should be negative, reducing the total amount. Final invoice can also
+be already paid in full, meaning theat the total amount is zero. It must always have the Sum line we mentioned above.
+
+You add ordinary items or services like in a regular invoice. Look above for specification.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "title=programming&qty=10&mu=hour&price=50&vat=22&discount=0&id_invoice_sent=100" \
+	"https://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+````
+
+Then you add the Sum line, qty price and vat are zero. This is achieved by using a special character "%" as the first character in title.
+This is the same as using "Vnesi posebno vrstico > Seštevek in DDV" in the Cebelca UI.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "title=%&qty=0&mu=&price=50&vat=0&discount=0&id_invoice_sent=100" \
+	"https://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+````
+
+And lasty you add one or more advance invoices as negative values to the invoice. These also have a special first character which causes the PDF
+to show just Title and Value on the right (hides qty, price, vat, discount). The special character is "*".
+
+It is again the same as using "Vnesi posebno vrstico > Naziv in znesek z DDV". The title now includes a text and Advance number. The price is net value
+of the advance. And VAT is the VAT of the advance. If Advance had more than one VAT level you must add one line per level here.
+
+You can add multiple advances in this manner.
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "title=* Predplačilo po avansu A25-0001&qty=-1&mu=&price=160&vat=0&discount=0&id_invoice_sent=100" \
+	"https://www.cebelca.biz/API?_r=invoice-sent-b&_m=insert-into"
+````
+
+#### Advance and final invoice from proforma
