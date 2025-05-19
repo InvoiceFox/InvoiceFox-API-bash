@@ -22,6 +22,7 @@
     - [Add the proforma invoice lines](#add-the-proforma-invoice-lines)
   - [Get the proforma PDF](#get-the-proforma-pdf)
   - [From proforma to invoice](#from-proforma-to-invoice)
+- [Other types of invoices](other-types-of-invoices)
   - [Manually creating final invoice]()
     - [Final invoice head](final-invoice-head)
     - [Add the final invoice lines](add-the-final-invoice-lines)
@@ -416,7 +417,7 @@ curl -v -k
 
 ## Other types of invoices
 
-#### Invoice doctypes
+## Invoice doctypes
 
 When you are creating invoice head you can set the doctype to define invoice as the regular invoice, advance invoice, credit note (dobropis), or cancelation (storno). Other data is the same.
 
