@@ -92,3 +92,64 @@ returns the ID of the partner:
 ````
 [[{"ok":"DONE","docnum":"24-0005"}]]
 ````
+
+## Creating a document
+
+Documents change inventory, incoming documents add to inventory and outgoing reduce the inventory for the items. Transfer documents move inventory from
+one (internal) warehouse to another.
+
+Documents have types:
+
+* Incoming: 0
+* Outgoing: 1
+* Internal: 2
+* Workwarrant: 3
+* No-effect: 4
+
+Documents have sub-types:
+
+* Incoming:
+  * Start: 1
+  * Purchase: 2
+  * Return: 3
+  * Check more: 4
+* Outgoing:
+  * Sales: 101
+  * Cancel: 102
+  * Promo: 103
+  * Check less: 104
+  * Return you: 105
+* No-effect
+  * Order sent: 201
+  * Order recv: 202
+
+#### Add transfer head
+
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "date_created=22.06.2025&id_contact_from=101&id_contact_to=202&docnum=25-001&doctype=0&subdoctype=1" \
+	"https://www.cebelca.biz/API?_r=transfer&_m=insert-select"
+````
+returns ID of the invoice:
+````
+>> ['ok',[{'id':100, ...}]] 
+````
+
+### Add transfer lines 
+
+* **id_item** ID of an item (integer)
+* **descr** description of an item (text)
+* **qty** qty of item on the document (number)
+* **mu** measuring unit of quantity
+* **price** price of item on the document (purchase price in case of incoming document)
+* **id_transfer** ID of the document
+* **price2** secondary price (predicted sales price in case of incoming document - required by gov) 
+
+````
+curl -v -k \
+	-u $TOKEN:x \
+	-d "id_item=42&descr=item description&qty=10&mu=kos&price=5&vat=22&discount=0&price2=12&id_transfer=100" \
+	"https://www.cebelca.biz/API?_r=transfer-b&_m=insert-into"
+````
