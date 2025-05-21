@@ -95,7 +95,7 @@ returns the ID of the partner:
 
 ## Creating a document
 
-Documents change inventory, incoming documents add to inventory and outgoing reduce the inventory for the items. Transfer documents move inventory from
+Documents change inventory in a specific warehouse, incoming documents add to inventory and outgoing reduce the inventory for the items. Internal documents move inventory from
 one (internal) warehouse to another.
 
 Documents have types:
@@ -125,6 +125,9 @@ Documents have sub-types:
 
 #### Add transfer head
 
+Transfer has a head, where you set date, the warehouse or a partner where items come from and go to. Doctype determines if items are added to the inventory, removed from inventory or
+moved between warehouses.
+
 
 ````
 curl -v -k \
@@ -139,13 +142,15 @@ returns ID of the invoice:
 
 ### Add transfer lines 
 
+Each transfer document has multiple items on it. One per line. Data for the line is:
+
 * **id_item** ID of an item (integer)
 * **descr** description of an item (text)
 * **qty** qty of item on the document (number)
 * **mu** measuring unit of quantity
 * **price** price of item on the document (purchase price in case of incoming document)
-* **id_transfer** ID of the document
-* **price2** secondary price (predicted sales price in case of incoming document - required by gov) 
+* **id_transfer** ID of the document head
+* **price2** secondary price - predicted sales price in case of incoming document - required by gov, other types of documents don't need this price 
 
 ````
 curl -v -k \
