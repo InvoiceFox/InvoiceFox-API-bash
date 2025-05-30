@@ -216,8 +216,10 @@ If you don't have any "cash" invoices you can issue them outside the fiscal syst
 * **title** - leave empty and app will define it by itself, or define it here
 * **doctype** - document type
   * 0 - invoice
+  * 1 - advance payment invoice
   * 2 - credit note
-  * 3 - advance payment invoice
+  * 3 - cancelation
+  * 10 - final invoice
 
 ````
 curl -v -k \
@@ -503,12 +505,12 @@ This mimics the Cebelca BIZ UI on Proforma > Open and table "Avansni računi" at
 
 #### Create advance invoice
 
-For this you just need ID of proforma, dates of invoice and an amout of advance payment.
+For this you just need ID of proforma, dates of invoice and an percentage of the proforma that is being paid.
 
 ````
 curl -v -k \
 	-u $TOKEN:x \
-	-d "docnum=&date_sent=01.05.2025&date_serverd=01.05.2025&date_to_pay=01.05.2025&price=300&id_preinvoice=31" \
+	-d "docnum=&date_sent=01.05.2025&date_serverd=01.05.2025&date_to_pay=01.05.2025&percent=100&id_preinvoice=31" \
 	"https://www.cebelca.biz/API?_r=preinvoice&_m=make-advance-invoice"
 ````
 
